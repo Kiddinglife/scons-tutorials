@@ -1,0 +1,28 @@
+print("Calling Program('hello.c')")
+
+srcfiles = Split('hello.c goodbye.c')
+srcfiles = Split("""
+                hello.c 
+                goodbye.c
+                """) # use """ so you can list your files in vetical order  good to look
+Program('new_hello_name', srcfiles)
+Program('new_hello_name', ['hello.c',]+['goodbye.c'])
+
+print("Finished calling Program()")
+
+"""terminal ouptputs
+jackiez@jackiez-desktop:~/eclipse-workspace/scons-tutorials/day-1$ scons
+scons: Reading SConscript files ...
+Calling Program('hello.c')
+Calling Program('goodbye.c')
+Finished calling Program()
+scons: done reading SConscript files.
+scons: Building targets ...
+scons: *** [goodbye.o] Source `goodbye.c' not found, needed by target `goodbye.o'.
+scons: building terminated because of errors.
+"""
+
+"""
+scons -Q to make less verbose
+scons -c clear all targets
+"""
