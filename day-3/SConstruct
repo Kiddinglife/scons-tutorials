@@ -1,11 +1,55 @@
 """
-Sharing Source Files Between Multiple Programs:
+Construction Environments
 
-One way to do this is to create a library from the common source files, 
-A more straightforward, but perhaps less convenient, way to share source 
-files between multiple programs
+By default, SCons initializes every new construction environment 
+with a set of construction variables based on the tools that
+it finds on your system, plus the default set of builder methods 
+necessary for using those tools. 
+ 
+The construction variables are initialized with values describing
+the C compiler, the Fortran compiler, the linker, etc., as well as 
+the command lines to invoke them.
 """
+env = Environment(CC='gcc', CCFLAGS='-O2', FOO='foo', BAR='bar')
 
+# Fetching Values From a Construction Environment
+env = Environment()
+print("CC is: %s" % env['CC'])
+
+dict = env.Dictionary()
+for key in ['OBJSUFFIX', 'LIBSUFFIX', 'PROGSUFFIX']:
+    print("key = %s, value = %s" % (key, dict[key]))
+
+for item in sorted(env.Dictionary().items()):
+    print("construction variable = '%s', value = '%s'" % item)
+    
+srcfiles = Split("""
+                foo.c 
+                """) 
+
+import os
+env = Environment(CC = 'gcc')
+# will guarantee that SCons will be able to execute any command 
+# that you can execute from the command line
+env['ENV'] = os.environ
+
+# Note that the added values are strings, and if you want to add multiple
+# directories to a variable like $PATH, you must include the path separate
+# character (: on Linux or POSIX, ; on Windows) in the string.
+env.PrependENVPath('PATH', '/usr/local/bin')
+env.AppendENVPath('LIB', '/usr/local/lib')
+
+opt = env.Clone(CCFLAGS = '-O2')
+dbg = env.Clone(CCFLAGS = '-g')
+
+env.Program('foo', srcfiles)
+
+o = opt.Object('foo-opt', srcfiles)
+opt.Program(o)
+
+d = dbg.Object('foo-dbg', srcfiles)
+dbg.Program(d)
+ 
 """terminal ouptputs
 scons: Reading SConscript files ...
 scons: done reading SConscript files.
