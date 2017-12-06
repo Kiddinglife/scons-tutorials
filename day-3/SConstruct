@@ -1,0 +1,20 @@
+"""
+Sharing Source Files Between Multiple Programs:
+
+One way to do this is to create a library from the common source files, 
+A more straightforward, but perhaps less convenient, way to share source 
+files between multiple programs
+"""
+
+"""terminal ouptputs
+scons: Reading SConscript files ...
+scons: done reading SConscript files.
+scons: Building targets ...
+gcc -o bar.o -c bar.c
+gcc -o common1.o -c common1.c
+gcc -o common2.o -c common2.c
+gcc -o bar bar.o common1.o common2.o
+gcc -o foo.o -c foo.c
+gcc -o foo foo.o common1.o common2.o
+scons: done building targets.
+"""
